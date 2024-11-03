@@ -1,15 +1,17 @@
 import pymongo
 from typing import Final, List, Dict
 from app.comum.strings import DadosDatabase
-from bson.json_util import dumps
+from bson.json_util import dumps, loads
 from bson.objectid import ObjectId
 from bson import ObjectId
+import os
+import bson
+from pymongo.errors import BulkWriteError
 
 
 class Model:
     def __init__(self) -> None:
-        #  self.__client = pymongo.MongoClient("mongodb://project-mongo-1:27017/")  # Prod
-        self.__client = pymongo.MongoClient("mongodb://localhost:27017/")  # Devlop
+        self.__client = pymongo.MongoClient("mongodb://project-mongo-1:27017/")  # Prod
         self.__db = self.__client[DadosDatabase.ROOT_DB]
 
     @property
@@ -35,6 +37,13 @@ class Produtos(Model):
             return True
         else:
             return False
+        
+    def restaurar_backup(self):
+        with open(f'{os.path.dirname(os.path.abspath(__file__))}/produtos.bson', 'rb+') as f:
+            try:
+                self.db['produtos'].insert_many(bson.decode_all(f.read()))
+            except BulkWriteError:
+                pass
 
     
     def em_estoque(self) -> Dict[str, str]:

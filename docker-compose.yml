@@ -15,7 +15,8 @@ services:
       depends_on:
         - backend
     mongo:
-      image: ./mongo/Dockerfile
+      image: mongo:5.0
+      container_name: project-mongo-1
       ports:
         - "27017:27017"
       volumes:

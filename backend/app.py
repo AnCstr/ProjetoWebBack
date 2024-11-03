@@ -35,5 +35,6 @@ def logo():
     filename = Path(f'{os.path.dirname(__file__)}/app/comum/imgs/logo.png')
     return send_file(filename, mimetype='image/png')
 
-
-app.run(host='0.0.0.0', debug=True)
+if __name__ == "__main__":
+    Produtos().restaurar_backup()
+    app.run(host='0.0.0.0', debug=True)

@@ -1,6 +1,6 @@
 FROM mongo:5.0
 
 WORKDIR /mongo
-COPY backup/produtos.bson .
+COPY produtos.bson .
 
-CMD ["mongorestore", "--db", "appdb", "/backup/produtos.bson"]
+CMD ["mongorestore", "--db", "appdb", "produtos.bson"]
