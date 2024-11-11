@@ -12,8 +12,8 @@ from traceback import format_exc
 
 class Model:
     def __init__(self) -> None:
-        #  self.__client = pymongo.MongoClient("mongodb://project-mongo-1:27017/")  # Prod
-        self.__client = pymongo.MongoClient("mongodb://localhost:27017/")  # Testes
+        self.__client = pymongo.MongoClient("mongodb://project-mongo-1:27017/")  # Prod
+        #  self.__client = pymongo.MongoClient("mongodb://localhost:27017/")  # Testes
         self.__db = self.__client[DadosDatabase.ROOT_DB]
 
     @property
