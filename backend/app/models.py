@@ -7,11 +7,13 @@ from bson import ObjectId
 import os
 import bson
 from pymongo.errors import BulkWriteError
+from traceback import format_exc
 
 
 class Model:
     def __init__(self) -> None:
         self.__client = pymongo.MongoClient("mongodb://project-mongo-1:27017/")  # Prod
+        #  self.__client = pymongo.MongoClient("mongodb://localhost:27017/")  # Testes
         self.__db = self.__client[DadosDatabase.ROOT_DB]
 
     @property
@@ -54,7 +56,7 @@ class Produtos(Model):
         if not self.coll_existe():
             return dumps({})
         
-        return dumps(self.__coll.find().limit(query_limit))
+        return dumps(self.__coll.find({},{'_id': False}).limit(query_limit))
     
 class Produto:
     def __init__(self) -> None:
@@ -89,3 +91,69 @@ class Produto:
             raise ValueError("Produto não localizado")
 
         return dumps(jsn_produto)
+    
+
+class Pedido(Model):
+    def __init__(self) -> None:
+        super().__init__()
+        self.__coll = self.db[DadosDatabase.COLLECTION_PEDIDOS]
+
+    def criar_pedido(self, jsn_pedido):
+        """
+        Cria registro de pedido em banco de dados
+        :param jsn_pedido: Json com dados de pedido
+        """
+        try:
+            ult_pedido = self.get_ult_num_pedido()
+
+            if ult_pedido is None:
+                jsn_pedido['num_pedido'] = 1
+            else:
+                jsn_pedido['num_pedido'] = ult_pedido + 1
+     
+            self.__coll.insert_one(jsn_pedido)
+        except Exception:
+            print(format_exc())
+
+    def get_ult_num_pedido(self):
+        """
+        Retorna ultimo valor de pedido
+        """
+        try:
+            ult_pedido = self.__coll.find_one({}, sort={'num_pedido': -1})['num_pedido']
+        except KeyError:
+            ult_pedido = None
+        except TypeError:
+            ult_pedido = None
+
+        print(ult_pedido)
+
+        return ult_pedido
+    
+    def delete_pedido(self, num_pedido):
+        """
+        Deleta pedido a partir do numero do pedido
+        """
+        query = {"num_pedido": int(num_pedido)}
+        self.__coll.delete_many(query)
+        
+    def get_by_num_pedido(self, num_pedido):
+        """
+        Retorna dados de pedido a partir no numero de pedido informado
+        """
+        query = {"num_pedido": int(num_pedido)}
+        jsn_pedido = self.__coll.find_one(query)
+
+        return dumps(jsn_pedido)
+    
+    def atualiza_dados(self, json_dados):
+        """
+        Atualiza dados de pedido a partir de dados informados
+        """
+        query = {"num_pedido": int(json_dados["num_pedido"])}
+        json_dados.pop("num_pedido", None)
+
+        novos_valores = {"$set": {"dados_envio": json_dados}}
+        
+        self.__coll.update_one(query, novos_valores)
+

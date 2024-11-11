@@ -5,5 +5,5 @@ export default[
     {
         path: '',
         loadComponent: () => import('../pedidos/pedidos.component'),
-    }
+    },
 ] as Routes;

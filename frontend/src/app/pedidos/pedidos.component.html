@@ -1,21 +1,24 @@
 <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
     <div class="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8 justify-center">
         <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6 mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl justify-items-center">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl justify-center">
-                Pedido Finalizado!
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl justify-center"
+            *ngIf="numPedidoLoaded | async">
+                Pedido #{{numPedido}} Finalizado!     
               </h2>
         </div>
     </div>
     <div class="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
         <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
           <div class="space-y-6">
-            <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6">
+            <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6"
+            *ngIf="filtersLoaded | async"
+            >
                 <div class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
                     <span class="text-base font-bold text-gray-900 dark:text-white">Produto</span>
                     <span class="text-base font-bold text-gray-900 dark:text-white">Quantidade</span>
                     <span class="text-base font-bold text-gray-900 dark:text-white">Valor</span>
                 </div>
-            @for (produtoItem of state.products(); track produtoItem.product.id) {
+            @for (produtoItem of produtos; track produtoItem.product.id) {
                 <div class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0 py-2">
                   <a href="#" class="shrink-0 md:order-1">
                     <img
@@ -59,10 +62,26 @@
           <div class="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8 justify-center">
             <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6 mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
                 <div class="space-y-4 md:flex md:items-center md:justify-end md:gap-6 md:space-y-0">
-                    <span class="text-base font-bold text-gray-900 dark:text-white">Total: {{ state.price() | currency }}</span>
+                    <span class="text-base font-bold text-gray-900 dark:text-white">Total: {{ total | currency }}</span>
                 </div>
             </div>
-            </div>
           </div>
+          <div class="bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6 mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl space-y-4">
+            <button 
+              class="flex w-full items-center justify-center rounded-lg bg-red-700 px-5 py-2.5 text-sm font-medium
+              text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 
+              dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+               (click)="cancelPedido()"
+               >Cancelar Pedido
+            </button>
+            <button 
+              class="flex w-full items-center justify-center rounded-lg bg-green-700 px-5 py-2.5 text-sm font-medium
+               text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 
+               dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+               (click)="atualizarPedido()"
+               >Atualizar Dados de Entrega
+            </button>
+          </div>
+        </div>
     </div>
 </section>

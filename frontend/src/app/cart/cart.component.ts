@@ -45,17 +45,16 @@ export default class CartComponent {
   finalizarPedido() {
     
     const produtosCarrinho = this.state.products();
-
-    this.cartService.returnPost(produtosCarrinho).subscribe(
-      (response) => {
-
-        console.log('Pedido finalizado com sucesso', response);
-
-        this.router.navigate(['/pedidos']);
-      },
-      (error) => {
-        console.error('Erro ao finalizar pedido', error);
-      }
-    );
+    const pedido = {
+      products: produtosCarrinho,
+      total: this.state.price(),
+      data_pedido: new Date().toLocaleDateString()
+    }
+    
+    this.cartService.returnPost(pedido);
+    this.router.navigate(['/pedidos'])
+    this.state.products().map(
+      (product) => this.state.remove(product.product.id)
+      )
   }
 }
