@@ -10,6 +10,7 @@ from pymongo.errors import BulkWriteError
 from traceback import format_exc
 
 
+
 class Model:
     def __init__(self) -> None:
         self.__client = pymongo.MongoClient("mongodb://project-mongo-1:27017/")  # Prod
@@ -57,6 +58,18 @@ class Produtos(Model):
             return dumps({})
         
         return dumps(self.__coll.find({},{'_id': False}).limit(query_limit))
+
+    def get_by_regex_title(self, title: str) -> Dict[str, dict]:
+        """
+        Retorna dados de produto a partir do titulo do mesmo
+        :param title: str title de produto a ser pesquisado
+        :return Dict[str, str]: Json com dados de produto
+        """
+        title = title.title()
+        jsn_produto = self.__coll.find({"title": {'$regex': title, '$options':'i'}})
+        print(jsn_produto)
+
+        return dumps(jsn_produto)
     
 class Produto:
     def __init__(self) -> None:
@@ -91,7 +104,7 @@ class Produto:
             raise ValueError("Produto não localizado")
 
         return dumps(jsn_produto)
-    
+
 
 class Pedido(Model):
     def __init__(self) -> None:

@@ -4,9 +4,11 @@ from app.models import Produtos, Produto, Pedido
 import os
 from pathlib import Path
 from bson.json_util import dumps
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+CORS(app)
 
 @app.after_request
 def after_request(response):
@@ -24,6 +26,12 @@ def produtos():
 @app.route('/products/<id>')
 def produto(id):
     jsn = Produto().get_by_id(id)
+    return jsn
+
+@app.route('/products/filtrado/<titulo>')
+def produtos_filtrados(titulo):
+    jsn = Produtos().get_by_regex_title(titulo)
+
     return jsn
 
 @app.route('/imgs/<filename>')

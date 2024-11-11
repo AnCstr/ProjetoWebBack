@@ -2,12 +2,13 @@ import { inject, Injectable, signal } from "@angular/core";
 import { Product } from "../../shared/interfaces/product.interface";
 import { signalSlice } from 'ngxtension/signal-slice'
 import { ProductsService } from "./products.service";
-import { catchError, map, of, startWith, Subject, switchMap } from "rxjs";
+import { catchError, filter, map, of, startWith, Subject, switchMap } from "rxjs";
 
 interface State{
     products: Product[];
     status: 'loading' | 'success' | 'error';
     page: number;
+    filter: string;
 }
 
 @Injectable()
@@ -19,9 +20,11 @@ export class ProductsStateService {
         products: [],
         status: 'loading' as const,
         page: 1,
+        filter: ''
     };
 
     changePage$ = new Subject<number>();
+    fltProducts$ = new Subject<string>();
     
 loadProducts$ = this.changePage$.pipe(
     startWith(1),
