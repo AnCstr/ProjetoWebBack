@@ -1,16 +1,15 @@
 import { Injectable } from "@angular/core";
 import { BaseHttpService } from "../../shared/data-access/base-http.service";
-import { HttpHeaders } from "@angular/common/http";
-import { intefacePedido } from "../../shared/interfaces/product.interface";
+import { interfaceDadosEnvio } from "../../shared/interfaces/product.interface";
 
 @Injectable({
     providedIn: 'root'
 })
 
-export class CartService extends BaseHttpService {
+export class DadosPedidoService extends BaseHttpService {
 
-    returnPost(pedido: object) {
-        return this.http.post<intefacePedido>(`${ this.apiUrl }/api/pedido/finalizar`, pedido).subscribe(
+    returnPost(dadosEnvio: object) {
+        return this.http.post<interfaceDadosEnvio>(`${ this.apiUrl }/atualizar_dados_pedido`, dadosEnvio).subscribe(
             (response) => {
       
               console.log('Pedido finalizado com sucesso', response);
